@@ -1,4 +1,7 @@
 import React, {useState, useEffect} from 'react';
+import initData  from './util/initCards';
+import { CARD_PAIRS_VALUE } from './util/initCards'
+
 
 // import all the components we are going to use
 import {
@@ -6,31 +9,37 @@ import {
   StyleSheet,
   View,
   Text,
+  TouchableOpacity,
   FlatList,
   Image,
+  Alert,
   Dimensions
 } from 'react-native';
 
-const App = () => {
-  
+import { useSelector, useDispatch } from 'react-redux'
+import {
+  flipCard,
+  flipCardBack,
+  initCard,
+} from './actions/cardSlice';
+	
 
+const App = () => {
+  const data = useSelector(state => state.card.cards)
+
+  //console.log(data)
   return (
-    <SafeAreaView style={styles.container}>
-      <Grid data = {data} />
-      
-    </SafeAreaView>
+    
+        <SafeAreaView style={styles.container}>
+   
+          <Grid data = {data} />
+   
+        </SafeAreaView>
+   
   );
 };
 export default App;
 
-const data = [
-  {id: 'a', value: '?'},
-  {id: 'b', value: '?'},
-  {id: 'c', value: '?'},
-  {id: 'd', value: '?'},
-  {id: 'e', value: '?'},
-  {id: 'f', value: '?'},
-];
 const numColumns = 3;
 const size = Dimensions.get('window').width/numColumns;
 const styles = StyleSheet.create({
@@ -47,15 +56,72 @@ const styles = StyleSheet.create({
   }
 });
 
+
+
 function Grid(props) {
+  const [step, setStep] = useState(0)
+  const [count, setCount] = useState(0)
+  const dispatch = useDispatch()
+  const [prev, setPrev] = useState({index:-1, value:-1})
+  
+  function showAlert(step) {
+    Alert.alert(
+    'congratulations!',
+    `You win this game by ${step} steps!`,
+    [
+       { text: 'Try another round', onPress: () => dispatch(initCard()) }
+     ]
+    )
+  }
+  	
+  function checkPair(prev, current) {
+    if (prev.value==current.value) {
+          //dispatch(flipCardPerm(prev.index));
+          
+          let succ = count + 1
+          setCount(succ)
+          console.log(succ)
+          if (succ==CARD_PAIRS_VALUE) {
+            setCount(0)
+            showAlert(step)
+          }
+    }
+    else {
+         dispatch(flipCardBack(prev.index));
+         dispatch(flipCardBack(current.index));
+    }
+}
+
+  function createFlipFunc(item, index) {
+      return () => {
+            if (item.flipState == 0) {
+              setStep(step+1)
+              dispatch(flipCard(index));
+              if (prev.index == -1)  setPrev( {index:index, value:item.value})
+              else {
+                let a = prev
+                setPrev( {index:-1, value: -1})
+                setTimeout(()=>checkPair(a, {index:index, value:item.value}),1000 );
+                 
+                 
+              }
+            }
+         }
+   }
+
   return (
     <FlatList
-      data={data}
-      renderItem={({item}) => (
-        <View style={styles.itemContainer}>
-          <Text style={styles.item}>{item.value}</Text>
-        </View>
-      )}
+      data={props.data}
+      renderItem={({item, index}) => {
+      
+        let flip= createFlipFunc(item, index)
+        return (<View style={styles.itemContainer}>
+       	
+          <Text style={styles.item} onPress={flip}>{item.displayValue}</Text>
+          
+        </View>)
+     
+      }}
       keyExtractor={item => item.id}
       numColumns={numColumns} />
   );

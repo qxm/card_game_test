@@ -96,11 +96,10 @@ const viewStyles = {
 };
 
 function Grid(props) {
-  const [step, setStep] = useState(0)
   const [count, setCount] = useState(0)
   const dispatch = useDispatch()
   const [prev, setPrev] = useState({index:-1, value:-1})
-  
+   const step = useSelector(state => state.card.step)
   function showAlert(step) {
     Alert.alert(
     'congratulations!',
@@ -120,7 +119,7 @@ function Grid(props) {
           console.log(succ)
           if (succ==CARD_PAIRS_VALUE) {
             setCount(0)
-            showAlert(step)
+            showAlert(step+1)
           }
     }
     else {
@@ -132,7 +131,7 @@ function Grid(props) {
   function createFlipFunc(item, index) {
       return () => {
             if (item.flipState == 0) {
-              setStep(step+1)
+             
               dispatch(flipCard(index));
               if (prev.index == -1)  setPrev( {index:index, value:item.value})
               else {

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import initCards from '../util/initCards'
 import { CARD_PAIRS_VALUE } from '../util/initCards'
 
-const initialState = { cards: initCards(CARD_PAIRS_VALUE ) }
+const initialState = { cards: initCards(CARD_PAIRS_VALUE ), step:0 }
 
 const cardSlice = createSlice({
   name: 'card',
@@ -13,6 +13,7 @@ const cardSlice = createSlice({
       var card = state.cards[action.payload]
        card.displayValue = card.value
       card.flipState = 1 //temp flip the card
+      state.step ++
     },
     flipCardBack(state, action) {
       console.log("flip card back")
@@ -29,6 +30,7 @@ const cardSlice = createSlice({
     initCard(state) {
       console.log("intit cards")
       state.cards = initCards(CARD_PAIRS_VALUE )
+      state.step = 0
     },
   },
 })

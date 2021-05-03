@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import initData  from './util/initCards';
 import { CARD_PAIRS_VALUE } from './util/initCards'
-
+import * as globalStyles from './styles/global';
 
 // import all the components we are going to use
 import {
@@ -26,26 +26,38 @@ import {
 
 const App = () => {
   const data = useSelector(state => state.card.cards)
+  const step = useSelector(state => state.card.step)
 
   //console.log(data)
   return (
     
-        <SafeAreaView style={styles.container}>
+       
    
-          <Grid data = {data} />
+          <SafeAreaView style={globalStyles.COMMON_STYLES.pageContainer}>
+             <View style={styles.lineContainer}>
+               <Text
+                    style={styles.item}
+                 
+            
+               > STEPS: {step}</Text>
+            </View>
+            <Grid data = {data} />
+          </SafeAreaView>
    
-        </SafeAreaView>
+        
    
   );
 };
 export default App;
 
 const numColumns = 3;
+const numRows = 5;
 const size = Dimensions.get('window').width/numColumns;
+const height = Dimensions.get('window').height/ numRows;
 const styles = StyleSheet.create({
   itemContainer: {
     width: size,
-    height: size,
+    height: height,
   },
   item: {
     flex: 1,
@@ -53,10 +65,19 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightblue',
     textAlign: 'center',
     textAlignVertical: 'center'
-  }
+  },
+  lineContainer: {
+    width: size * numColumns,
+    height: height /2 -25 ,
+    backgroundColor: '#F5FCFF',
+  },
 });
 
-
+const viewStyles = {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+};
 
 function Grid(props) {
   const [step, setStep] = useState(0)

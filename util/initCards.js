@@ -1,4 +1,4 @@
-export const CARD_PAIRS_VALUE = 9
+export const CARD_PAIRS_VALUE = 6
 
 export default (pair) => {
     var values = [];

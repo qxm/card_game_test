@@ -27,7 +27,10 @@ import {
 const App = () => {
   const data = useSelector(state => state.card.cards)
   const step = useSelector(state => state.card.step)
-
+   const dispatch = useDispatch()
+  const restart = () => {
+      dispatch(initCard())
+  }
   //console.log(data)
   return (
     
@@ -35,8 +38,13 @@ const App = () => {
    
           <SafeAreaView style={globalStyles.COMMON_STYLES.pageContainer}>
              <View style={styles.lineContainer}>
+                <Text
+                    style={styles.steps}
+                    onPress={restart}
+            
+               > Restart</Text>
                <Text
-                    style={styles.item}
+                    style={styles.steps}
                  
             
                > STEPS: {step}</Text>
@@ -66,7 +74,15 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     textAlignVertical: 'center'
   },
+  steps: {
+    flex: 1,
+    margin: 3,
+    backgroundColor: 'lightblue',
+    textAlign: 'center',
+    textAlignVertical: 'center'
+  }, 
   lineContainer: {
+    flexDirection: 'row',
     width: size * numColumns,
     height: height /2 -25 ,
     backgroundColor: '#F5FCFF',
